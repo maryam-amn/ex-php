@@ -17,6 +17,12 @@ class ArraysAndLoops
      */
     public static function generateRandomArray(): array
     {
+        $randomArray = [];
+        for ($i = 0; $i < 100; $i++) {
+            $randomArray[] = rand(1, 10);
+        }
+
+        return $randomArray;
     }
 
     /**
@@ -26,6 +32,8 @@ class ArraysAndLoops
      */
     public static function countNumbers(array $array): array
     {
+        return array_count_values($array);
+
     }
 
     /**
@@ -36,6 +44,18 @@ class ArraysAndLoops
      */
     public static function filterUsers(array $users, string $attribute, $value): array
     {
+        return array_filter($users, function ($user) use ($value, $attribute) {
+            $name = $user->getName();
+            $age = $user->getAge();
+            if ($attribute === 'getName') {
+                return $name === $value;
+            } elseif ($attribute === 'getAge') {
+                return $age === $value;
+            }
+
+            return false;
+
+        });
     }
 
     /**
@@ -45,5 +65,17 @@ class ArraysAndLoops
      */
     public static function transformUsers(array $users): array
     {
+        return array_map(function ($user) {
+            $name = ucfirst($user->getName());
+            $age = $user->getAge();
+            if ($age % 2 == 0) {
+                $age = ($age / 2) + 2;
+            } else {
+                $age += 10;
+            }
+
+            return new User($name, $age);
+
+        }, $users);
     }
 }
