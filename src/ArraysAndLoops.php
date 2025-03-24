@@ -67,6 +67,7 @@ class ArraysAndLoops
     {
         return array_map(function ($user) {
             $name = ucfirst($user->getName());
+            
             $age = $user->getAge();
             if ($age % 2 == 0) {
                 $age = ($age / 2) + 2;
