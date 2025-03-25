@@ -10,6 +10,24 @@
  * (Your form should be semantically correct, use a label and name your fields)
  */
 
+
+$text = filter_input(INPUT_POST, 'Name', FILTER_SANITIZE_SPECIAL_CHARS);
+$text = ucfirst($text);
+$ages_user = filter_input(INPUT_POST, 'Age', FILTER_SANITIZE_NUMBER_INT);
+
+function input_valid($name, $age)
+{
+    if ($name && $age) {
+        if (strlen($name) > 6) {
+            return "<span style='color:red'>$name</span> is $age years old";
+        } else {
+            return "$name is $age years old";
+        }
+    } else {
+        return 'Submit the form';
+    }
+}
+
 ?>
 
 <!doctype html>
@@ -20,9 +38,35 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Form management</title>
+
 </head>
 <body>
+<h1><?=input_valid($text, $ages_user)?></h1>
+
 
 <!-- WRITE YOUR HTML AND PHP TEMPLATING HERE -->
+<form  method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
+    <label for="Name "> Name :</label>
+    <input type="text" name="Name" id="Name " value="<?php echo $text;?>" >
+
+    <label for="Age "> Age :</label>
+    <input type="text" name="Age" id="Age " value="<?php echo $ages_user;?>">
+    <button type="submit" name="Submit the form'">Submit  </button>
+</form>
+
+<ul>
+    <?php if ($ages_user > 18):?>
+
+        <?php  for ($i = 1; $i <= $ages_user; $i++) :?>
+
+            <li><?= $i ?></li>
+
+        <?php endfor ?>
+    <?php endif;?>
+</ul>
+
+
+
+
 </body>
 </html>
