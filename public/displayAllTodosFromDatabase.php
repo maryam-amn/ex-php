@@ -44,7 +44,6 @@ try {
 ?>
 
 
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -85,7 +84,7 @@ try {
 
 <?php foreach ($result as $row) { ?>
     <form action="deleteTodoFromDatabase.php" method="POST">
-        <li> <?= $row['title'].' '.$row['due_date'].' '?>
+        <li> <?= htmlspecialchars($row['title']).' '.htmlspecialchars($row['due_date']).' '?>
             <button type="submit" name = 'delete' value='<?= $row['id']?>'>Delete</button></li>
     </form>
 <?php } ?>

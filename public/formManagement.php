@@ -39,7 +39,7 @@ function input_valid($name, $age)
 
 </head>
 <body>
-<h1><?= input_valid($text, $ages_user)?></h1>
+<h1><?= input_valid(htmlspecialchars($text), htmlspecialchars($age))?></h1>
 
 
 <!-- WRITE YOUR HTML AND PHP TEMPLATING HERE -->

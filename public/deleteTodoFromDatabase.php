@@ -19,10 +19,10 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
 $db = new PDO($dbs, $user, $pass, $options);
+$delete_id = filter_input(INPUT_POST, 'delete', FILTER_SANITIZE_NUMBER_INT);
 
 if (isset($_POST['delete'])) {
 
-    $delete_id = $_POST['delete'];
 
     try {
         $query = 'DELETE FROM todos WHERE id=:delete_id';
