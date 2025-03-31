@@ -9,8 +9,34 @@
  * The sort option selected must be remembered after the form submission (use a query parameter).
  * The todo title and date should be displayed in a list (date in american format).
  */
+$errors = [];
+$success = null;
+$dbs = 'sqlite:../database.db';
+$user = 'root';
+$pass = '';
+$options = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false,
+];
+
+try {
+    $db = new PDO($dbs, $user, $pass, $options);
+
+    $queryGet = $db->prepare('SELECT * FROM todos');
+    $queryGet->execute();
+
+
+    $success = 'It works';
+    $result = $queryGet->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    $errors[] = 'Database error: '.$e->getMessage();
+}
 
 ?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -28,8 +54,30 @@
 </h1>
 
 <a href="writeTodoToDatabase.php">Ajouter une nouvelle todo</a>
+<form>
+  <select>
+      <option>Due date </option>
+      <option>Name</option>
+  </select>
 
+
+</form>
 <!-- WRITE YOUR HTML AND PHP TEMPLATING HERE -->
+
+<?php if (count($errors) > 0) { ?>
+    <?php foreach ($errors as $error) { ?>
+        <li><?= $error ?></li>
+    <?php } ?>
+<?php }  ?>
+
+
+<?php foreach ($result as $row) : ?>
+    <li> <?= $row['title']. ' '. $row['due_date']?></li>
+<?php endforeach; ?>
+
+
+
+
 
 </body>
 </html>
