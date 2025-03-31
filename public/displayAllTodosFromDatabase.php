@@ -11,6 +11,7 @@
  */
 $errors = [];
 $success = null;
+$sort = filter_input(INPUT_GET, 'sort');
 $dbs = 'sqlite:../database.db';
 $user = 'root';
 $pass = '';
@@ -19,18 +20,24 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
-
 try {
     $db = new PDO($dbs, $user, $pass, $options);
+    if ($sort === 'name') {
+        $queryGet = $db->prepare('SELECT * FROM todos ORDER BY  title');
+    } elseif ($sort === 'due_date') {
 
-    $queryGet = $db->prepare('SELECT * FROM todos');
+        $queryGet = $db->prepare('SELECT * FROM todos ORDER BY due_date');
+
+    } else {
+        $queryGet = $db->prepare('SELECT * FROM todos ');
+
+    }
     $queryGet->execute();
-
-
     $success = 'It works';
     $result = $queryGet->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
+    $errors[] = 'Verify your database connection';
     $errors[] = 'Database error: '.$e->getMessage();
 }
 
@@ -54,26 +61,34 @@ try {
 </h1>
 
 <a href="writeTodoToDatabase.php">Ajouter une nouvelle todo</a>
-<form>
-  <select>
-      <option>Due date </option>
-      <option>Name</option>
-  </select>
-
+<form >
+    <label for="sort">
+  <select name="sort">
+      <option name="due_date" value="due_date" <?php if ($sort === 'due_date') {
+          echo 'selected="selected" ';
+      } ?>>Due date</option>
+      <option name="name" value="name" <?php if ($sort === 'name') {
+          echo 'selected="selected" ';
+      } ?>>Name</option>
+  </select></label>
+    <button type="submit">Sort</button>
 
 </form>
 <!-- WRITE YOUR HTML AND PHP TEMPLATING HERE -->
 
 <?php if (count($errors) > 0) { ?>
     <?php foreach ($errors as $error) { ?>
-        <li><?= $error ?></li>
+       <p><?= $error ?></p>
     <?php } ?>
 <?php }  ?>
 
 
-<?php foreach ($result as $row) : ?>
-    <li> <?= $row['title']. ' '. $row['due_date']?></li>
-<?php endforeach; ?>
+<?php foreach ($result as $row) { ?>
+    <form action="deleteTodoFromDatabase.php" method="POST">
+        <li> <?= $row['title'].' '.$row['due_date'].' '?>
+            <button type="submit" name = 'delete' value='<?= $row['id']?>'>Delete</button></li>
+    </form>
+<?php } ?>
 
 
 
